@@ -106,40 +106,38 @@ const Settings = () => {
     <AppLayout title="Settings">
       <div className="space-y-6">
         {/* User Profile Card */}
-        <Card className="glass-card border-white/10">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center">
-                <User className="h-8 w-8 text-red-400" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-white">John Racer</h3>
-                <p className="text-white/60">Professional Driver</p>
-                <p className="text-white/40 text-sm">Member since 2024</p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="border-white/20 text-white hover:bg-white/5"
-              >
-                Edit
-              </Button>
+        <div className="glass-card p-6">
+          <div className="flex items-center space-x-4">
+            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center">
+              <User className="h-8 w-8 text-red-400" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-white">John Racer</h3>
+              <p className="text-white/60">Professional Driver</p>
+              <p className="text-white/40 text-sm">Member since 2024</p>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="border-white/20 text-white hover:bg-white/5 bg-transparent"
+            >
+              Edit
+            </Button>
+          </div>
+        </div>
 
         {/* Settings Groups */}
         {settingsGroups.map((group, groupIndex) => (
-          <Card key={groupIndex} className="glass-card border-white/10">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-3 text-white">
+          <div key={groupIndex} className="glass-card">
+            <div className="p-6 pb-3">
+              <div className="flex items-center gap-3 text-white">
                 <div className="p-2 rounded-lg bg-gradient-to-br from-red-500/20 to-pink-500/20">
                   <group.icon className="h-5 w-5 text-red-400" />
                 </div>
-                {group.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+                <h3 className="text-xl font-semibold">{group.title}</h3>
+              </div>
+            </div>
+            <div className="px-6 pb-6 space-y-4">
               {group.items.map((item, itemIndex) => (
                 <div key={itemIndex}>
                   <div className="flex items-center justify-between">
@@ -158,7 +156,7 @@ const Settings = () => {
                         variant="outline"
                         size="sm"
                         onClick={item.action}
-                        className="border-white/20 text-white hover:bg-white/5"
+                        className="border-white/20 text-white hover:bg-white/5 bg-transparent"
                       >
                         Configure
                       </Button>
@@ -175,21 +173,21 @@ const Settings = () => {
                   )}
                 </div>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
 
         {/* Quick Stats */}
-        <Card className="glass-card border-white/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-white">
+        <div className="glass-card">
+          <div className="p-6 pb-3">
+            <div className="flex items-center gap-3 text-white">
               <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20">
                 <Gauge className="h-5 w-5 text-blue-400" />
               </div>
-              App Statistics
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+              <h3 className="text-xl font-semibold">App Statistics</h3>
+            </div>
+          </div>
+          <div className="px-6 pb-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-white">247</div>
@@ -208,20 +206,20 @@ const Settings = () => {
                 <div className="text-white/60 text-sm">Data Usage</div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Support Section */}
-        <Card className="glass-card border-white/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-white">
+        <div className="glass-card">
+          <div className="p-6 pb-3">
+            <div className="flex items-center gap-3 text-white">
               <div className="p-2 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20">
                 <HelpCircle className="h-5 w-5 text-green-400" />
               </div>
-              Support & About
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+              <h3 className="text-xl font-semibold">Support & About</h3>
+            </div>
+          </div>
+          <div className="px-6 pb-6 space-y-3">
             <Button
               variant="ghost"
               className="w-full justify-start text-white hover:bg-white/5"
@@ -253,8 +251,8 @@ const Settings = () => {
             <div className="text-center text-white/40 text-sm py-2">
               KartMate v1.0.0
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Logout Button */}
         <Button
