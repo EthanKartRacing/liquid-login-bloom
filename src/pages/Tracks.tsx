@@ -1,9 +1,19 @@
-
 import React, { useState } from 'react';
-import { Plus, MapPin, Clock, Trophy, Filter, Search } from 'lucide-react';
+import { Plus, MapPin, Clock, Trophy, Filter, Search, Cloud, Thermometer, Wind, Droplets } from 'lucide-react';
 import AppLayout from '../components/layout/AppLayout';
 import TrackCard from '../components/tracks/TrackCard';
 import AddTrackModal from '../components/tracks/AddTrackModal';
+
+// Mock weather data
+const mockWeather = {
+  temperature: 24,
+  condition: 'Partly Cloudy',
+  humidity: 65,
+  windSpeed: 12,
+  windDirection: 'NE',
+  visibility: 10,
+  uvIndex: 6
+};
 
 // Mock data for tracks
 const mockTracks = [
@@ -89,6 +99,51 @@ const Tracks = () => {
   return (
     <AppLayout title="Tracks">
       <div className="space-y-6 animate-fade-in">
+        {/* Weather Section */}
+        <div className="glass-card p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-white">Current Weather</h2>
+            <Cloud className="w-5 h-5 text-blue-400" />
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <Thermometer className="w-4 h-4 text-orange-400" />
+                <div>
+                  <div className="text-white font-medium">{mockWeather.temperature}°C</div>
+                  <div className="text-white/60 text-xs">{mockWeather.condition}</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Wind className="w-4 h-4 text-blue-400" />
+                <div>
+                  <div className="text-white font-medium">{mockWeather.windSpeed} km/h</div>
+                  <div className="text-white/60 text-xs">{mockWeather.windDirection}</div>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <Droplets className="w-4 h-4 text-blue-400" />
+                <div>
+                  <div className="text-white font-medium">{mockWeather.humidity}%</div>
+                  <div className="text-white/60 text-xs">Humidity</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-yellow-600 rounded-full"></div>
+                </div>
+                <div>
+                  <div className="text-white font-medium">UV {mockWeather.uvIndex}</div>
+                  <div className="text-white/60 text-xs">Moderate</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Search and Filter */}
         <div className="space-y-4">
           <div className="relative">

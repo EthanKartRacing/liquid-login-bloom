@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Sessions from "./pages/Sessions";
 import Tracks from "./pages/Tracks";
+import Karts from "./pages/Karts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,8 +26,8 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/tracks" element={<Tracks />} />
+          <Route path="/karts" element={<Karts />} />
           {/* Placeholder routes for tab navigation */}
-          <Route path="/karts" element={<Dashboard />} />
           <Route path="/settings" element={<Dashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
