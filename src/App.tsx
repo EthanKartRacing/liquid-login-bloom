@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Sessions from "./pages/Sessions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,8 +22,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/sessions" element={<Sessions />} />
           {/* Placeholder routes for tab navigation */}
-          <Route path="/sessions" element={<Dashboard />} />
           <Route path="/tracks" element={<Dashboard />} />
           <Route path="/karts" element={<Dashboard />} />
           <Route path="/settings" element={<Dashboard />} />
