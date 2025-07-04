@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Sessions from "./pages/Sessions";
 import Tracks from "./pages/Tracks";
 import Karts from "./pages/Karts";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,8 +28,7 @@ const App = () => (
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/tracks" element={<Tracks />} />
           <Route path="/karts" element={<Karts />} />
-          {/* Placeholder routes for tab navigation */}
-          <Route path="/settings" element={<Dashboard />} />
+          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
