@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Clock, MapPin, Car, Settings } from 'lucide-react';
+import { Home, Clock, MapPin, Car, Users, Settings } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const BottomTabBar = () => {
@@ -11,12 +11,13 @@ const BottomTabBar = () => {
     { icon: Clock, label: 'Sessions', path: '/sessions' },
     { icon: MapPin, label: 'Tracks', path: '/tracks' },
     { icon: Car, label: 'Karts', path: '/karts' },
+    { icon: Users, label: 'Social', path: '/social' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="glass-card-intense border-t border-white/20 rounded-t-3xl px-2 py-2">
+      <div className="glass-card-intense border-t border-white/20 rounded-t-3xl px-1 py-2">
         <div className="flex justify-around items-center">
           {tabs.map(({ icon: Icon, label, path }) => {
             const isActive = location.pathname === path;
@@ -33,7 +34,7 @@ const BottomTabBar = () => {
                     : 'hover:bg-white/5'
                 }`}>
                   <Icon 
-                    size={20} 
+                    size={18} 
                     className={`mx-auto mb-1 ${
                       isActive ? 'text-red-400' : 'text-white/60'
                     }`} 
