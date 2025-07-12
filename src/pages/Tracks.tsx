@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Plus, MapPin, Clock, Trophy, Filter, Search, Cloud, Thermometer, Wind, Droplets } from 'lucide-react';
+import { Plus, MapPin, Clock, Trophy, Filter, Search, Cloud, Thermometer, Wind, Droplets, Calendar, TrendingUp } from 'lucide-react';
 import AppLayout from '../components/layout/AppLayout';
 import TrackCard from '../components/tracks/TrackCard';
 import AddTrackModal from '../components/tracks/AddTrackModal';
 
-// Mock weather data
+// Enhanced mock weather data with more details
 const mockWeather = {
   temperature: 24,
   condition: 'Partly Cloudy',
@@ -12,7 +12,14 @@ const mockWeather = {
   windSpeed: 12,
   windDirection: 'NE',
   visibility: 10,
-  uvIndex: 6
+  uvIndex: 6,
+  pressure: 1013,
+  feelsLike: 26,
+  forecast: [
+    { time: '12:00', temp: 24, condition: 'Sunny' },
+    { time: '15:00', temp: 26, condition: 'Cloudy' },
+    { time: '18:00', temp: 22, condition: 'Clear' }
+  ]
 };
 
 // Mock data for tracks
@@ -99,58 +106,83 @@ const Tracks = () => {
   return (
     <AppLayout title="Tracks">
       <div className="space-y-6 animate-fade-in">
-        {/* Weather Section */}
+        {/* Enhanced Weather Section */}
         <div className="glass-card p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-white">Current Weather</h2>
-            <Cloud className="w-5 h-5 text-blue-400" />
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Track Conditions</h2>
+              <p className="text-white/60 text-xs">Live weather data</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Cloud className="w-5 h-5 text-blue-400" />
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6 mb-4">
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <Thermometer className="w-4 h-4 text-orange-400" />
+                <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                  <Thermometer className="w-4 h-4 text-orange-400" />
+                </div>
                 <div>
                   <div className="text-white font-medium">{mockWeather.temperature}°C</div>
-                  <div className="text-white/60 text-xs">{mockWeather.condition}</div>
+                  <div className="text-white/60 text-xs">Feels like {mockWeather.feelsLike}°C</div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <Wind className="w-4 h-4 text-blue-400" />
+                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <Wind className="w-4 h-4 text-blue-400" />
+                </div>
                 <div>
                   <div className="text-white font-medium">{mockWeather.windSpeed} km/h</div>
-                  <div className="text-white/60 text-xs">{mockWeather.windDirection}</div>
+                  <div className="text-white/60 text-xs">{mockWeather.windDirection} • {mockWeather.pressure} hPa</div>
                 </div>
               </div>
             </div>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <Droplets className="w-4 h-4 text-blue-400" />
+                <div className="w-8 h-8 bg-blue-400/20 rounded-lg flex items-center justify-center">
+                  <Droplets className="w-4 h-4 text-blue-400" />
+                </div>
                 <div>
                   <div className="text-white font-medium">{mockWeather.humidity}%</div>
-                  <div className="text-white/60 text-xs">Humidity</div>
+                  <div className="text-white/60 text-xs">Humidity • {mockWeather.visibility}km vis</div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-                  <div className="w-2 h-2 bg-yellow-600 rounded-full"></div>
+                <div className="w-8 h-8 bg-yellow-400/20 rounded-lg flex items-center justify-center">
+                  <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
                 </div>
                 <div>
                   <div className="text-white font-medium">UV {mockWeather.uvIndex}</div>
-                  <div className="text-white/60 text-xs">Moderate</div>
+                  <div className="text-white/60 text-xs">Moderate exposure</div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Weather forecast */}
+          <div className="border-t border-white/10 pt-3">
+            <div className="flex items-center justify-between">
+              {mockWeather.forecast.map((hour, index) => (
+                <div key={index} className="text-center">
+                  <div className="text-white/60 text-xs mb-1">{hour.time}</div>
+                  <div className="text-white text-sm font-medium">{hour.temp}°</div>
+                  <div className="text-white/60 text-xs">{hour.condition}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Search and Filter */}
+        {/* Enhanced Search and Filter */}
         <div className="space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/60" />
             <input
               type="text"
-              placeholder="Search tracks..."
+              placeholder="Search tracks or locations..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="glass-card w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 text-white placeholder:text-white/60 border-0 focus:ring-2 focus:ring-blue-500"
@@ -158,16 +190,22 @@ const Tracks = () => {
           </div>
           
           <div className="flex items-center justify-between">
-            <select 
-              value={filterDifficulty}
-              onChange={(e) => setFilterDifficulty(e.target.value)}
-              className="glass-card px-3 py-2 rounded-xl bg-white/5 text-white text-sm border-0 focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Difficulties</option>
-              <option value="beginner">Beginner</option>
-              <option value="intermediate">Intermediate</option>
-              <option value="advanced">Advanced</option>
-            </select>
+            <div className="flex items-center space-x-3">
+              <select 
+                value={filterDifficulty}
+                onChange={(e) => setFilterDifficulty(e.target.value)}
+                className="glass-card px-3 py-2 rounded-xl bg-white/5 text-white text-sm border-0 focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">All Difficulties</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+              
+              <button className="glass-card p-2 hover-lift">
+                <Filter className="w-4 h-4 text-white/60" />
+              </button>
+            </div>
             
             <button 
               onClick={() => setShowAddModal(true)}
@@ -179,25 +217,28 @@ const Tracks = () => {
           </div>
         </div>
 
-        {/* Track Stats */}
+        {/* Enhanced Track Stats */}
         <div className="glass-card p-6">
-          <h2 className="text-lg font-semibold text-white mb-4">Track Statistics</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-white">Track Statistics</h2>
+            <TrendingUp className="w-5 h-5 text-green-400" />
+          </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="text-center">
+            <div className="text-center p-3 glass-card">
               <div className="text-2xl font-bold text-white mb-1">{mockTracks.length}</div>
               <div className="text-white/60 text-xs">Total Tracks</div>
             </div>
-            <div className="text-center">
+            <div className="text-center p-3 glass-card">
               <div className="text-2xl font-bold text-green-400 mb-1">0:58.91</div>
-              <div className="text-white/60 text-xs">Best Overall</div>
+              <div className="text-white/60 text-xs">Personal Best</div>
             </div>
-            <div className="text-center">
+            <div className="text-center p-3 glass-card">
               <div className="text-2xl font-bold text-blue-400 mb-1">40</div>
               <div className="text-white/60 text-xs">Total Sessions</div>
             </div>
-            <div className="text-center">
+            <div className="text-center p-3 glass-card">
               <div className="text-2xl font-bold text-orange-400 mb-1">1185m</div>
-              <div className="text-white/60 text-xs">Avg Length</div>
+              <div className="text-white/60 text-xs">Average Length</div>
             </div>
           </div>
         </div>
@@ -216,7 +257,7 @@ const Tracks = () => {
             <p className="text-white/60 text-sm mb-4">
               {searchTerm || filterDifficulty !== 'all' 
                 ? 'Try adjusting your search or filters' 
-                : 'Start tracking your favorite karting circuits'
+                : 'Start building your track database'
               }
             </p>
             <button 

@@ -1,267 +1,301 @@
 
 import React, { useState } from 'react';
-import AppLayout from '@/components/layout/AppLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { 
   User, 
   Bell, 
   Shield, 
-  Smartphone, 
-  Database, 
-  HelpCircle, 
-  LogOut,
-  Timer,
-  Gauge,
-  MapPin,
-  Camera,
-  Wifi,
-  Battery
+  Palette, 
+  Download, 
+  Upload,
+  Trash2,
+  HelpCircle,
+  Mail,
+  Star,
+  ChevronRight,
+  Moon,
+  Sun,
+  Smartphone,
+  Globe,
+  Lock,
+  Eye,
+  Database
 } from 'lucide-react';
+import AppLayout from '../components/layout/AppLayout';
 
 const Settings = () => {
-  const [settings, setSettings] = useState({
-    notifications: true,
-    autoLapTimer: true,
-    voiceAlerts: false,
-    dataSync: true,
-    locationServices: true,
-    cameraAccess: true,
-    batteryOptimization: false,
-    offlineMode: false
+  const [notifications, setNotifications] = useState({
+    sessions: true,
+    maintenance: true,
+    weather: false,
+    social: true
   });
+  const [darkMode, setDarkMode] = useState(true);
+  const [units, setUnits] = useState('metric');
+  const [language, setLanguage] = useState('en');
 
-  const toggleSetting = (key: string) => {
-    setSettings(prev => ({
+  const handleNotificationChange = (key: string) => {
+    setNotifications(prev => ({
       ...prev,
       [key]: !prev[key as keyof typeof prev]
     }));
   };
 
-  const settingsGroups = [
-    {
-      title: "Profile",
-      icon: User,
-      items: [
-        { label: "Edit Profile", type: "button", action: () => console.log("Edit profile") },
-        { label: "Driver License", type: "input", placeholder: "License Number" },
-        { label: "Racing Category", type: "input", placeholder: "e.g., Senior, Junior" },
-      ]
-    },
-    {
-      title: "Race Settings",
-      icon: Timer,
-      items: [
-        { label: "Auto Lap Timer", type: "toggle", key: "autoLapTimer" },
-        { label: "Voice Alerts", type: "toggle", key: "voiceAlerts" },
-        { label: "Default Track", type: "input", placeholder: "Select default track" },
-        { label: "Preferred Kart", type: "input", placeholder: "Kart number or type" },
-      ]
-    },
-    {
-      title: "Notifications",
-      icon: Bell,
-      items: [
-        { label: "Push Notifications", type: "toggle", key: "notifications" },
-        { label: "Race Reminders", type: "toggle", key: "notifications" },
-        { label: "Best Lap Alerts", type: "toggle", key: "notifications" },
-        { label: "Weather Updates", type: "toggle", key: "notifications" },
-      ]
-    },
-    {
-      title: "Data & Sync",
-      icon: Database,
-      items: [
-        { label: "Auto Sync", type: "toggle", key: "dataSync" },
-        { label: "Offline Mode", type: "toggle", key: "offlineMode" },
-        { label: "Export Data", type: "button", action: () => console.log("Export data") },
-        { label: "Import Data", type: "button", action: () => console.log("Import data") },
-      ]
-    },
-    {
-      title: "Permissions",
-      icon: Shield,
-      items: [
-        { label: "Location Services", type: "toggle", key: "locationServices" },
-        { label: "Camera Access", type: "toggle", key: "cameraAccess" },
-        { label: "Microphone", type: "toggle", key: "voiceAlerts" },
-      ]
-    },
-    {
-      title: "Device",
-      icon: Smartphone,
-      items: [
-        { label: "Battery Optimization", type: "toggle", key: "batteryOptimization" },
-        { label: "WiFi Sync Only", type: "toggle", key: "offlineMode" },
-        { label: "Storage Usage", type: "button", action: () => console.log("Storage info") },
-      ]
-    }
-  ];
-
   return (
     <AppLayout title="Settings">
-      <div className="space-y-6">
-        {/* User Profile Card */}
+      <div className="space-y-6 animate-fade-in">
+        {/* Profile Section */}
         <div className="glass-card p-6">
-          <div className="flex items-center space-x-4">
-            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center">
-              <User className="h-8 w-8 text-red-400" />
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center">
+              <User className="w-8 h-8 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white">John Racer</h3>
-              <p className="text-white/60">Professional Driver</p>
-              <p className="text-white/40 text-sm">Member since 2024</p>
+              <h2 className="text-xl font-bold text-white">John Racer</h2>
+              <p className="text-white/60 text-sm">Professional Driver • Sydney, NSW</p>
+              <div className="flex items-center space-x-2 mt-1">
+                <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                <span className="text-yellow-400 text-sm font-medium">4.8 Rating</span>
+              </div>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="border-white/20 text-white hover:bg-white/5 bg-transparent"
-            >
-              Edit
-            </Button>
+            <button className="ios-button-glass">
+              <span>Edit Profile</span>
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10">
+            <div className="text-center">
+              <div className="text-lg font-bold text-white">47</div>
+              <div className="text-white/60 text-xs">Sessions</div>
+            </div>
+            <div className="text-center">
+              <div className="text-lg font-bold text-green-400">0:58.91</div>
+              <div className="text-white/60 text-xs">Best Lap</div>
+            </div>
+            <div className="text-center">
+              <div className="text-lg font-bold text-blue-400">8</div>
+              <div className="text-white/60 text-xs">Tracks</div>
+            </div>
           </div>
         </div>
 
-        {/* Settings Groups */}
-        {settingsGroups.map((group, groupIndex) => (
-          <div key={groupIndex} className="glass-card">
-            <div className="p-6 pb-3">
-              <div className="flex items-center gap-3 text-white">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-red-500/20 to-pink-500/20">
-                  <group.icon className="h-5 w-5 text-red-400" />
+        {/* Preferences */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Palette className="w-5 h-5 mr-2" />
+            Preferences
+          </h3>
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  {darkMode ? <Moon className="w-4 h-4 text-purple-400" /> : <Sun className="w-4 h-4 text-yellow-400" />}
                 </div>
-                <h3 className="text-xl font-semibold">{group.title}</h3>
+                <div>
+                  <div className="text-white font-medium">Theme</div>
+                  <div className="text-white/60 text-sm">Dark mode enabled</div>
+                </div>
               </div>
+              <button 
+                onClick={() => setDarkMode(!darkMode)}
+                className={`w-12 h-6 rounded-full transition-colors ${
+                  darkMode ? 'bg-blue-500' : 'bg-white/20'
+                } relative`}
+              >
+                <div className={`w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 ${
+                  darkMode ? 'translate-x-6' : 'translate-x-0.5'
+                }`} />
+              </button>
             </div>
-            <div className="px-6 pb-6 space-y-4">
-              {group.items.map((item, itemIndex) => (
-                <div key={itemIndex}>
-                  <div className="flex items-center justify-between">
-                    <Label className="text-white/80 font-medium">
-                      {item.label}
-                    </Label>
-                    {item.type === 'toggle' && (
-                      <Switch
-                        checked={settings[item.key as keyof typeof settings]}
-                        onCheckedChange={() => item.key && toggleSetting(item.key)}
-                        className="data-[state=checked]:bg-red-500"
-                      />
-                    )}
-                    {item.type === 'button' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={item.action}
-                        className="border-white/20 text-white hover:bg-white/5 bg-transparent"
-                      >
-                        Configure
-                      </Button>
-                    )}
+
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Globe className="w-4 h-4 text-green-400" />
+                </div>
+                <div>
+                  <div className="text-white font-medium">Units</div>
+                  <div className="text-white/60 text-sm">Metric system</div>
+                </div>
+              </div>
+              <select 
+                value={units}
+                onChange={(e) => setUnits(e.target.value)}
+                className="glass-card px-3 py-1 rounded-lg bg-white/5 text-white text-sm border-0"
+              >
+                <option value="metric">Metric</option>
+                <option value="imperial">Imperial</option>
+              </select>
+            </div>
+
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <Smartphone className="w-4 h-4 text-blue-400" />
+                </div>
+                <div>
+                  <div className="text-white font-medium">Language</div>
+                  <div className="text-white/60 text-sm">English (Australia)</div>
+                </div>
+              </div>
+              <select 
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="glass-card px-3 py-1 rounded-lg bg-white/5 text-white text-sm border-0"
+              >
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Notifications */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Bell className="w-5 h-5 mr-2" />
+            Notifications
+          </h3>
+          
+          <div className="space-y-4">
+            {Object.entries(notifications).map(([key, enabled]) => (
+              <div key={key} className="flex items-center justify-between py-2">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <Bell className="w-4 h-4 text-orange-400" />
                   </div>
-                  {item.type === 'input' && (
-                    <Input
-                      placeholder={item.placeholder}
-                      className="mt-2 bg-white/5 border-white/20 text-white placeholder:text-white/40"
-                    />
-                  )}
-                  {itemIndex < group.items.length - 1 && (
-                    <Separator className="bg-white/10 mt-4" />
-                  )}
+                  <div>
+                    <div className="text-white font-medium capitalize">
+                      {key === 'sessions' ? 'Session Reminders' :
+                       key === 'maintenance' ? 'Maintenance Alerts' :
+                       key === 'weather' ? 'Weather Updates' : 'Social Activity'}
+                    </div>
+                    <div className="text-white/60 text-sm">
+                      {key === 'sessions' ? 'Get notified about upcoming sessions' :
+                       key === 'maintenance' ? 'Kart maintenance reminders' :
+                       key === 'weather' ? 'Track weather conditions' : 'Friend activity updates'}
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        ))}
-
-        {/* Quick Stats */}
-        <div className="glass-card">
-          <div className="p-6 pb-3">
-            <div className="flex items-center gap-3 text-white">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20">
-                <Gauge className="h-5 w-5 text-blue-400" />
+                <button 
+                  onClick={() => handleNotificationChange(key)}
+                  className={`w-12 h-6 rounded-full transition-colors ${
+                    enabled ? 'bg-green-500' : 'bg-white/20'
+                  } relative`}
+                >
+                  <div className={`w-5 h-5 bg-white rounded-full transition-transform absolute top-0.5 ${
+                    enabled ? 'translate-x-6' : 'translate-x-0.5'
+                  }`} />
+                </button>
               </div>
-              <h3 className="text-xl font-semibold">App Statistics</h3>
-            </div>
-          </div>
-          <div className="px-6 pb-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">247</div>
-                <div className="text-white/60 text-sm">Total Sessions</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">12</div>
-                <div className="text-white/60 text-sm">Tracks Visited</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">45.2s</div>
-                <div className="text-white/60 text-sm">Best Lap Time</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">1.2GB</div>
-                <div className="text-white/60 text-sm">Data Usage</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Support Section */}
-        <div className="glass-card">
-          <div className="p-6 pb-3">
-            <div className="flex items-center gap-3 text-white">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20">
-                <HelpCircle className="h-5 w-5 text-green-400" />
+        {/* Data & Privacy */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Shield className="w-5 h-5 mr-2" />
+            Data & Privacy
+          </h3>
+          
+          <div className="space-y-3">
+            <button className="w-full flex items-center justify-between py-3 px-4 glass-card hover-lift">
+              <div className="flex items-center space-x-3">
+                <Database className="w-5 h-5 text-blue-400" />
+                <div className="text-left">
+                  <div className="text-white font-medium">Export Data</div>
+                  <div className="text-white/60 text-sm">Download your session data</div>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold">Support & About</h3>
-            </div>
-          </div>
-          <div className="px-6 pb-6 space-y-3">
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-white hover:bg-white/5"
-            >
-              Help Center
-            </Button>
-            <Separator className="bg-white/10" />
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-white hover:bg-white/5"
-            >
-              Contact Support
-            </Button>
-            <Separator className="bg-white/10" />
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-white hover:bg-white/5"
-            >
-              Privacy Policy
-            </Button>
-            <Separator className="bg-white/10" />
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-white hover:bg-white/5"
-            >
-              Terms of Service
-            </Button>
-            <Separator className="bg-white/10" />
-            <div className="text-center text-white/40 text-sm py-2">
-              KartMate v1.0.0
-            </div>
+              <ChevronRight className="w-5 h-5 text-white/40" />
+            </button>
+
+            <button className="w-full flex items-center justify-between py-3 px-4 glass-card hover-lift">
+              <div className="flex items-center space-x-3">
+                <Lock className="w-5 h-5 text-green-400" />
+                <div className="text-left">
+                  <div className="text-white font-medium">Privacy Settings</div>
+                  <div className="text-white/60 text-sm">Manage data sharing preferences</div>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-white/40" />
+            </button>
+
+            <button className="w-full flex items-center justify-between py-3 px-4 glass-card hover-lift">
+              <div className="flex items-center space-x-3">
+                <Trash2 className="w-5 h-5 text-red-400" />
+                <div className="text-left">
+                  <div className="text-white font-medium">Delete Account</div>
+                  <div className="text-white/60 text-sm">Permanently remove your data</div>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-white/40" />
+            </button>
           </div>
         </div>
 
-        {/* Logout Button */}
-        <Button
-          variant="destructive"
-          className="w-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sign Out
-        </Button>
+        {/* Support */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <HelpCircle className="w-5 h-5 mr-2" />
+            Support
+          </h3>
+          
+          <div className="space-y-3">
+            <button className="w-full flex items-center justify-between py-3 px-4 glass-card hover-lift">
+              <div className="flex items-center space-x-3">
+                <HelpCircle className="w-5 h-5 text-purple-400" />
+                <div className="text-left">
+                  <div className="text-white font-medium">Help Center</div>
+                  <div className="text-white/60 text-sm">FAQs and tutorials</div>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-white/40" />
+            </button>
+
+            <button className="w-full flex items-center justify-between py-3 px-4 glass-card hover-lift">
+              <div className="flex items-center space-x-3">
+                <Mail className="w-5 h-5 text-blue-400" />
+                <div className="text-left">
+                  <div className="text-white font-medium">Contact Support</div>
+                  <div className="text-white/60 text-sm">Get help from our team</div>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-white/40" />
+            </button>
+
+            <button className="w-full flex items-center justify-between py-3 px-4 glass-card hover-lift">
+              <div className="flex items-center space-x-3">
+                <Star className="w-5 h-5 text-yellow-400" />
+                <div className="text-left">
+                  <div className="text-white font-medium">Rate KartMate</div>
+                  <div className="text-white/60 text-sm">Help us improve the app</div>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-white/40" />
+            </button>
+          </div>
+        </div>
+
+        {/* App Info */}
+        <div className="glass-card p-6">
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center mx-auto">
+              <div className="text-white font-bold">KM</div>
+            </div>
+            <div>
+              <div className="text-white font-medium">KartMate</div>
+              <div className="text-white/60 text-sm">Version 1.0.0 (Beta)</div>
+            </div>
+            <div className="pt-2 border-t border-white/10">
+              <p className="text-white/60 text-xs">
+                Made with ❤️ for the Australian karting community
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </AppLayout>
   );
