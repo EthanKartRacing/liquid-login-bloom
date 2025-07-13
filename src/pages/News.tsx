@@ -1,13 +1,20 @@
-
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppLayout from '../components/layout/AppLayout';
 import { 
   Calendar, Clock, ExternalLink, Filter, Search, Bookmark, BookmarkCheck, 
   Share2, Eye, TrendingUp, MessageCircle, ThumbsUp, RefreshCw, X,
-  ChevronDown, Hash, Users, Play, Bell, BellOff
+  ChevronDown, Hash, Users, Play, Bell, BellOff, SortAsc, SortDesc
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 
 interface NewsArticle {
   id: string;
@@ -178,6 +185,7 @@ const searchSuggestions = [
 ];
 
 const News = () => {
+  const navigate = useNavigate();
   const [articles, setArticles] = useState<NewsArticle[]>(mockNews);
   const [selectedSource, setSelectedSource] = useState<string>('All');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -188,6 +196,8 @@ const News = () => {
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [notifications, setNotifications] = useState(true);
+  const [sortBy, setSortBy] = useState<'date' | 'views' | 'likes'>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const sources = ['All', 'Karting Australia', 'Australian Kart Club', 'General Karting'];
   const categories = ['All', 'Race Results', 'Championship', 'Technical', 'Driver News', 'Event Calendar', 'Industry News'];
@@ -215,17 +225,53 @@ const News = () => {
     setIsRefreshing(false);
   };
 
-  const filteredArticles = articles.filter(article => {
-    const matchesSource = selectedSource === 'All' || article.source === selectedSource;
-    const matchesCategory = selectedCategory === 'All' || article.category === selectedCategory;
-    const matchesSearch = searchQuery === '' || 
-      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesBookmark = !showBookmarked || article.isBookmarked;
-    
-    return matchesSource && matchesCategory && matchesSearch && matchesBookmark;
-  });
+  const handleArticleClick = (articleId: string) => {
+    navigate(`/news/${articleId}`);
+  };
+
+  const sortedAndFilteredArticles = React.useMemo(() => {
+    let filtered = articles.filter(article => {
+      const matchesSource = selectedSource === 'All' || article.source === selectedSource;
+      const matchesCategory = selectedCategory === 'All' || article.category === selectedCategory;
+      const matchesSearch = searchQuery === '' || 
+        article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        article.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        article.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesBookmark = !showBookmarked || article.isBookmarked;
+      
+      return matchesSource && matchesCategory && matchesSearch && matchesBookmark;
+    });
+
+    // Sort articles
+    filtered.sort((a, b) => {
+      let aValue, bValue;
+      
+      switch (sortBy) {
+        case 'date':
+          aValue = new Date(a.publishedAt).getTime();
+          bValue = new Date(b.publishedAt).getTime();
+          break;
+        case 'views':
+          aValue = a.views;
+          bValue = b.views;
+          break;
+        case 'likes':
+          aValue = a.likes;
+          bValue = b.likes;
+          break;
+        default:
+          return 0;
+      }
+
+      if (sortOrder === 'asc') {
+        return aValue - bValue;
+      } else {
+        return bValue - aValue;
+      }
+    });
+
+    return filtered;
+  }, [articles, selectedSource, selectedCategory, searchQuery, showBookmarked, sortBy, sortOrder]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -276,7 +322,7 @@ const News = () => {
             </Button>
           </div>
           <div className="text-white/60 text-sm">
-            {filteredArticles.length} articles
+            {sortedAndFilteredArticles.length} articles
           </div>
         </div>
 
@@ -327,29 +373,51 @@ const News = () => {
           {/* Advanced Filters */}
           {showFilters && (
             <div className="flex flex-wrap gap-3 border-t border-white/10 pt-4">
-              <select
-                className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-red-500/50"
-                value={selectedSource}
-                onChange={(e) => setSelectedSource(e.target.value)}
-              >
-                {sources.map(source => (
-                  <option key={source} value={source} className="bg-gray-900 text-white">
-                    {source}
-                  </option>
-                ))}
-              </select>
+              <Select value={selectedSource} onValueChange={setSelectedSource}>
+                <SelectTrigger className="w-48 bg-white/5 border-white/10 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-900 border-white/10">
+                  {sources.map(source => (
+                    <SelectItem key={source} value={source} className="text-white hover:bg-white/10">
+                      {source}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-              <select
-                className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-red-500/50"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-48 bg-white/5 border-white/10 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-900 border-white/10">
+                  {categories.map(category => (
+                    <SelectItem key={category} value={category} className="text-white hover:bg-white/10">
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={sortBy} onValueChange={(value: 'date' | 'views' | 'likes') => setSortBy(value)}>
+                <SelectTrigger className="w-40 bg-white/5 border-white/10 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-900 border-white/10">
+                  <SelectItem value="date" className="text-white hover:bg-white/10">Date</SelectItem>
+                  <SelectItem value="views" className="text-white hover:bg-white/10">Views</SelectItem>
+                  <SelectItem value="likes" className="text-white hover:bg-white/10">Likes</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                className="bg-white/5 border-white/20 text-white hover:bg-white/10"
               >
-                {categories.map(category => (
-                  <option key={category} value={category} className="bg-gray-900 text-white">
-                    {category}
-                  </option>
-                ))}
-              </select>
+                {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+              </Button>
 
               <Button
                 variant={showBookmarked ? "default" : "outline"}
@@ -390,13 +458,13 @@ const News = () => {
         </Card>
 
         {/* Breaking News Banner */}
-        {filteredArticles.some(article => article.isBreaking) && (
+        {sortedAndFilteredArticles.some(article => article.isBreaking) && (
           <div className="glass-card border-red-500/30 bg-gradient-to-r from-red-500/10 to-pink-500/10 p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
               <span className="text-red-400 font-semibold text-sm uppercase tracking-wide">Breaking News</span>
             </div>
-            {filteredArticles.filter(article => article.isBreaking).map(article => (
+            {sortedAndFilteredArticles.filter(article => article.isBreaking).map(article => (
               <h3 key={article.id} className="text-white font-medium cursor-pointer hover:text-red-400 transition-colors">
                 {article.title}
               </h3>
@@ -427,48 +495,51 @@ const News = () => {
         </div>
 
         {/* Featured Article */}
-        {filteredArticles.length > 0 && (
-          <article className="glass-card overflow-hidden border-l-4 border-l-red-500">
+        {sortedAndFilteredArticles.length > 0 && (
+          <article 
+            className="glass-card overflow-hidden border-l-4 border-l-red-500 cursor-pointer hover:bg-white/5 transition-all"
+            onClick={() => handleArticleClick(sortedAndFilteredArticles[0].id)}
+          >
             <div className="relative">
               <img
-                src={filteredArticles[0].imageUrl}
-                alt={filteredArticles[0].title}
+                src={sortedAndFilteredArticles[0].imageUrl}
+                alt={sortedAndFilteredArticles[0].title}
                 className="w-full h-64 object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
                 <div className="flex items-center gap-2 mb-2">
-                  {filteredArticles[0].isBreaking && (
+                  {sortedAndFilteredArticles[0].isBreaking && (
                     <span className="bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
                       BREAKING
                     </span>
                   )}
-                  {filteredArticles[0].isTrending && (
+                  {sortedAndFilteredArticles[0].isTrending && (
                     <span className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-semibold flex items-center gap-1">
                       <TrendingUp className="w-3 h-3" />
                       TRENDING
                     </span>
                   )}
-                  {filteredArticles[0].isPremium && (
+                  {sortedAndFilteredArticles[0].isPremium && (
                     <span className="bg-yellow-500 text-black px-2 py-1 rounded text-xs font-semibold">
                       PREMIUM
                     </span>
                   )}
                 </div>
                 <h2 className="text-xl font-bold text-white mb-2 line-clamp-2">
-                  {filteredArticles[0].title}
+                  {sortedAndFilteredArticles[0].title}
                 </h2>
                 <div className="flex items-center gap-4 text-white/80 text-sm">
                   <div className="flex items-center gap-2">
                     <img
-                      src={filteredArticles[0].authorAvatar}
-                      alt={filteredArticles[0].author}
+                      src={sortedAndFilteredArticles[0].authorAvatar}
+                      alt={sortedAndFilteredArticles[0].author}
                       className="w-6 h-6 rounded-full"
                     />
-                    <span>{filteredArticles[0].author}</span>
+                    <span>{sortedAndFilteredArticles[0].author}</span>
                   </div>
-                  <span>{formatDate(filteredArticles[0].publishedAt)}</span>
-                  <span>{filteredArticles[0].readTime} min read</span>
+                  <span>{formatDate(sortedAndFilteredArticles[0].publishedAt)}</span>
+                  <span>{sortedAndFilteredArticles[0].readTime} min read</span>
                 </div>
               </div>
             </div>
@@ -477,8 +548,12 @@ const News = () => {
 
         {/* News Articles Grid */}
         <div className="grid gap-4 md:grid-cols-2">
-          {filteredArticles.slice(1).map((article) => (
-            <article key={article.id} className="glass-card hover:bg-white/5 transition-all duration-200 overflow-hidden group">
+          {sortedAndFilteredArticles.slice(1).map((article) => (
+            <article 
+              key={article.id} 
+              className="glass-card hover:bg-white/5 transition-all duration-200 overflow-hidden group cursor-pointer"
+              onClick={() => handleArticleClick(article.id)}
+            >
               <div className="relative">
                 <img
                   src={article.imageUrl}
@@ -523,7 +598,7 @@ const News = () => {
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-white mb-3 line-clamp-2 hover:text-red-400 transition-colors cursor-pointer">
+                <h3 className="text-lg font-bold text-white mb-3 line-clamp-2 hover:text-red-400 transition-colors">
                   {article.title}
                 </h3>
 
@@ -596,7 +671,10 @@ const News = () => {
                       )}
                     </button>
                     
-                    <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                    <button 
+                      onClick={(e) => e.stopPropagation()}
+                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    >
                       <Share2 className="w-4 h-4 text-white/60 hover:text-white" />
                     </button>
                   </div>
@@ -606,7 +684,7 @@ const News = () => {
           ))}
         </div>
 
-        {filteredArticles.length === 0 && (
+        {sortedAndFilteredArticles.length === 0 && (
           <div className="glass-card p-12 text-center">
             <div className="text-white/40 mb-4">
               <Search className="w-16 h-16 mx-auto" />
@@ -631,7 +709,7 @@ const News = () => {
         )}
 
         {/* Load More Button */}
-        {filteredArticles.length > 0 && (
+        {sortedAndFilteredArticles.length > 0 && (
           <div className="text-center">
             <Button 
               variant="outline" 
