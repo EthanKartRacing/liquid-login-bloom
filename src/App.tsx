@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Sessions from "./pages/Sessions";
 import Tracks from "./pages/Tracks";
 import Karts from "./pages/Karts";
+import News from "./pages/News";
 import Socials from "./pages/Socials";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/tracks" element={<Tracks />} />
           <Route path="/karts" element={<Karts />} />
+          <Route path="/news" element={<News />} />
           <Route path="/social" element={<Socials />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
