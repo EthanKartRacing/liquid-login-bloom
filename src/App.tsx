@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Sessions from "./pages/Sessions";
 import Tracks from "./pages/Tracks";
+import AvailableTracks from "./pages/AvailableTracks";
 import Karts from "./pages/Karts";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/tracks" element={<Tracks />} />
+          <Route path="/available-tracks" element={<AvailableTracks />} />
           <Route path="/karts" element={<Karts />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/:id" element={<NewsDetail />} />

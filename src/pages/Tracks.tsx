@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { Plus, MapPin, Clock, Trophy, Filter, Search, Cloud, Thermometer, Wind, Droplets, Calendar, TrendingUp, Heart, Settings } from 'lucide-react';
+import { Library, MapPin, Clock, Trophy, Filter, Search, Cloud, Thermometer, Wind, Droplets, Calendar, TrendingUp, Heart, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import AppLayout from '../components/layout/AppLayout';
 import TrackCard from '../components/tracks/TrackCard';
-import AddTrackModal from '../components/tracks/AddTrackModal';
 import TrackSearchDropdown from '../components/tracks/TrackSearchDropdown';
 
 // Enhanced mock weather data with more details
@@ -96,20 +96,52 @@ const mockTracks = [
 ];
 
 const Tracks = () => {
-  const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDifficulty, setFilterDifficulty] = useState('all');
   const [favoriteTrack, setFavoriteTrack] = useState<typeof mockTracks[0] | null>(null);
+  const [userTracks, setUserTracks] = useState<typeof mockTracks>([]);
 
-  // Load favorite track from localStorage on mount
+  // Load user tracks and favorite track from localStorage on mount
   useEffect(() => {
-    const savedFavoriteId = localStorage.getItem('favoriteTrackId');
-    if (savedFavoriteId) {
-      const track = mockTracks.find(t => t.id === parseInt(savedFavoriteId));
-      if (track) {
-        setFavoriteTrack(track);
+    // Load user tracks
+    const savedTracks = localStorage.getItem('userTracks');
+    if (savedTracks) {
+      const tracks = JSON.parse(savedTracks);
+      setUserTracks(tracks);
+      
+      // Load favorite track from user tracks
+      const savedFavoriteId = localStorage.getItem('favoriteTrackId');
+      if (savedFavoriteId) {
+        const track = tracks.find((t: any) => t.id === parseInt(savedFavoriteId));
+        if (track) {
+          setFavoriteTrack(track);
+        }
       }
+    } else {
+      // If no saved tracks, use default mock tracks
+      setUserTracks(mockTracks);
+      localStorage.setItem('userTracks', JSON.stringify(mockTracks));
     }
+  }, []);
+
+  // Listen for storage changes to update tracks when they're added from AvailableTracks page
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedTracks = localStorage.getItem('userTracks');
+      if (savedTracks) {
+        setUserTracks(JSON.parse(savedTracks));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check periodically for changes (since localStorage events don't fire within same tab)
+    const interval = setInterval(handleStorageChange, 1000);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
   }, []);
 
   // Save favorite track to localStorage
@@ -131,7 +163,7 @@ const Tracks = () => {
     }
   };
 
-  const filteredTracks = mockTracks.filter(track => {
+  const filteredTracks = userTracks.filter(track => {
     const matchesSearch = track.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          track.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDifficulty = filterDifficulty === 'all' || 
@@ -168,7 +200,7 @@ const Tracks = () => {
           {/* Track Search Dropdown */}
           <div className="mb-4">
             <TrackSearchDropdown
-              tracks={mockTracks}
+              tracks={userTracks}
               selectedTrack={favoriteTrack}
               onTrackSelect={handleFavoriteTrackSelect}
               onClearSelection={handleClearFavorite}
@@ -263,13 +295,13 @@ const Tracks = () => {
               </button>
             </div>
             
-            <button 
-              onClick={() => setShowAddModal(true)}
+            <Link 
+              to="/available-tracks"
               className="ios-button-racing flex items-center space-x-2"
             >
-              <Plus className="w-4 h-4" />
-              <span>Add Track</span>
-            </button>
+              <Library className="w-4 h-4" />
+              <span>Browse Tracks</span>
+            </Link>
           </div>
         </div>
 
@@ -318,29 +350,18 @@ const Tracks = () => {
             <p className="text-white/60 text-sm mb-4">
               {searchTerm || filterDifficulty !== 'all' 
                 ? 'Try adjusting your search or filters' 
-                : 'Start building your track database'
+                : 'Start building your track collection'
               }
             </p>
-            <button 
-              onClick={() => setShowAddModal(true)}
+            <Link 
+              to="/available-tracks"
               className="ios-button-glass"
             >
-              Add Your First Track
-            </button>
+              Browse Available Tracks
+            </Link>
           </div>
         )}
       </div>
-
-      {/* Add Track Modal */}
-      {showAddModal && (
-        <AddTrackModal 
-          onClose={() => setShowAddModal(false)}
-          onSave={(trackData) => {
-            console.log('Track saved:', trackData);
-            setShowAddModal(false);
-          }}
-        />
-      )}
     </AppLayout>
   );
 };
