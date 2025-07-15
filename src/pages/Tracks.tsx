@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { Plus, MapPin, Clock, Trophy, Filter, Search, Cloud, Thermometer, Wind, Droplets, Calendar, TrendingUp } from 'lucide-react';
+
+import React, { useState, useEffect } from 'react';
+import { Plus, MapPin, Clock, Trophy, Filter, Search, Cloud, Thermometer, Wind, Droplets, Calendar, TrendingUp, Heart, Settings } from 'lucide-react';
 import AppLayout from '../components/layout/AppLayout';
 import TrackCard from '../components/tracks/TrackCard';
 import AddTrackModal from '../components/tracks/AddTrackModal';
+import TrackSearchDropdown from '../components/tracks/TrackSearchDropdown';
 
 // Enhanced mock weather data with more details
 const mockWeather = {
@@ -15,6 +17,9 @@ const mockWeather = {
   uvIndex: 6,
   pressure: 1013,
   feelsLike: 26,
+  trackTemp: 28,
+  gripLevel: 85,
+  surfaceCondition: 'Dry',
   forecast: [
     { time: '12:00', temp: 24, condition: 'Sunny' },
     { time: '15:00', temp: 26, condition: 'Cloudy' },
@@ -94,6 +99,37 @@ const Tracks = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDifficulty, setFilterDifficulty] = useState('all');
+  const [favoriteTrack, setFavoriteTrack] = useState<typeof mockTracks[0] | null>(null);
+
+  // Load favorite track from localStorage on mount
+  useEffect(() => {
+    const savedFavoriteId = localStorage.getItem('favoriteTrackId');
+    if (savedFavoriteId) {
+      const track = mockTracks.find(t => t.id === parseInt(savedFavoriteId));
+      if (track) {
+        setFavoriteTrack(track);
+      }
+    }
+  }, []);
+
+  // Save favorite track to localStorage
+  const handleFavoriteTrackSelect = (track: typeof mockTracks[0]) => {
+    setFavoriteTrack(track);
+    localStorage.setItem('favoriteTrackId', track.id.toString());
+  };
+
+  const handleClearFavorite = () => {
+    setFavoriteTrack(null);
+    localStorage.removeItem('favoriteTrackId');
+  };
+
+  const toggleTrackFavorite = (track: typeof mockTracks[0]) => {
+    if (favoriteTrack?.id === track.id) {
+      handleClearFavorite();
+    } else {
+      handleFavoriteTrackSelect(track);
+    }
+  };
 
   const filteredTracks = mockTracks.filter(track => {
     const matchesSearch = track.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -109,14 +145,34 @@ const Tracks = () => {
         {/* Enhanced Weather Section */}
         <div className="glass-card p-4">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-lg font-semibold text-white">Track Conditions</h2>
-              <p className="text-white/60 text-xs">Live weather data</p>
+            <div className="flex-1">
+              <h2 className="text-lg font-semibold text-white">
+                {favoriteTrack ? 'Favorite Track Live Conditions' : 'Track Conditions'}
+              </h2>
+              {favoriteTrack ? (
+                <div className="flex items-center space-x-2 mt-1">
+                  <Heart className="w-4 h-4 text-red-400 fill-current" />
+                  <span className="text-white/80 text-sm">{favoriteTrack.name}</span>
+                  <span className="text-white/60 text-xs">• {favoriteTrack.location}</span>
+                </div>
+              ) : (
+                <p className="text-white/60 text-xs">Select a favorite track for personalized conditions</p>
+              )}
             </div>
             <div className="flex items-center space-x-2">
               <Cloud className="w-5 h-5 text-blue-400" />
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             </div>
+          </div>
+
+          {/* Track Search Dropdown */}
+          <div className="mb-4">
+            <TrackSearchDropdown
+              tracks={mockTracks}
+              selectedTrack={favoriteTrack}
+              onTrackSelect={handleFavoriteTrackSelect}
+              onClearSelection={handleClearFavorite}
+            />
           </div>
           
           <div className="grid grid-cols-2 gap-6 mb-4">
@@ -127,7 +183,7 @@ const Tracks = () => {
                 </div>
                 <div>
                   <div className="text-white font-medium">{mockWeather.temperature}°C</div>
-                  <div className="text-white/60 text-xs">Feels like {mockWeather.feelsLike}°C</div>
+                  <div className="text-white/60 text-xs">Air • Track {mockWeather.trackTemp}°C</div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
@@ -151,12 +207,12 @@ const Tracks = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-yellow-400/20 rounded-lg flex items-center justify-center">
-                  <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                <div className="w-8 h-8 bg-green-400/20 rounded-lg flex items-center justify-center">
+                  <Trophy className="w-4 h-4 text-green-400" />
                 </div>
                 <div>
-                  <div className="text-white font-medium">UV {mockWeather.uvIndex}</div>
-                  <div className="text-white/60 text-xs">Moderate exposure</div>
+                  <div className="text-white font-medium">{mockWeather.gripLevel}%</div>
+                  <div className="text-white/60 text-xs">Grip • {mockWeather.surfaceCondition}</div>
                 </div>
               </div>
             </div>
@@ -246,7 +302,12 @@ const Tracks = () => {
         {/* Tracks List */}
         <div className="space-y-4">
           {filteredTracks.map((track) => (
-            <TrackCard key={track.id} track={track} />
+            <TrackCard 
+              key={track.id} 
+              track={track}
+              isFavorite={favoriteTrack?.id === track.id}
+              onToggleFavorite={() => toggleTrackFavorite(track)}
+            />
           ))}
         </div>
 

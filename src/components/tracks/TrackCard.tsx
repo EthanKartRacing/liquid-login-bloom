@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MapPin, Clock, Trophy, ChevronDown, ChevronUp, Calendar, Target } from 'lucide-react';
+import { MapPin, Clock, Trophy, ChevronDown, ChevronUp, Calendar, Target, Heart } from 'lucide-react';
 
 interface Track {
   id: number;
@@ -21,9 +21,11 @@ interface Track {
 
 interface TrackCardProps {
   track: Track;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
 }
 
-const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
+const TrackCard: React.FC<TrackCardProps> = ({ track, isFavorite = false, onToggleFavorite }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const getDifficultyColor = (difficulty: string) => {
@@ -47,10 +49,30 @@ const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
       >
         <div className="flex-1">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-white font-semibold text-lg">{track.name}</h3>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(track.difficulty)}`}>
-              {track.difficulty}
-            </span>
+            <div className="flex items-center space-x-2">
+              <h3 className="text-white font-semibold text-lg">{track.name}</h3>
+              {isFavorite && (
+                <Heart className="w-4 h-4 text-red-400 fill-current" />
+              )}
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(track.difficulty)}`}>
+                {track.difficulty}
+              </span>
+              {onToggleFavorite && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleFavorite();
+                  }}
+                  className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                >
+                  <Heart 
+                    className={`w-4 h-4 ${isFavorite ? 'text-red-400 fill-current' : 'text-white/60'} hover:text-red-400`} 
+                  />
+                </button>
+              )}
+            </div>
           </div>
           
           <div className="flex items-center space-x-4 text-white/60 text-sm mb-3">
