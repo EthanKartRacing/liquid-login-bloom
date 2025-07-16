@@ -347,7 +347,7 @@ const AddSession: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
       <div className="sticky top-0 z-40 glass-card p-4 border-b border-white/10">
         <div className="flex items-center justify-between mb-4">
