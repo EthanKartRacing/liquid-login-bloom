@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Sessions from "./pages/Sessions";
+import AddSession from "./pages/AddSession";
 import Tracks from "./pages/Tracks";
 import AvailableTracks from "./pages/AvailableTracks";
 import Karts from "./pages/Karts";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/sessions" element={<Sessions />} />
+          <Route path="/sessions/add" element={<AddSession />} />
           <Route path="/tracks" element={<Tracks />} />
           <Route path="/available-tracks" element={<AvailableTracks />} />
           <Route path="/karts" element={<Karts />} />

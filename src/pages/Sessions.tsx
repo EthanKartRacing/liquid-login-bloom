@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Filter, Clock, MapPin, Trophy, Car, Calendar, TrendingUp, BarChart3, Target } from 'lucide-react';
 import AppLayout from '../components/layout/AppLayout';
-import AddSessionModal from '../components/sessions/AddSessionModal';
 import SessionCard from '../components/sessions/SessionCard';
 
 // Enhanced mock data with more sessions
@@ -66,7 +66,7 @@ const mockSessions = [
 ];
 
 const Sessions = () => {
-  const [showAddModal, setShowAddModal] = useState(false);
+  const navigate = useNavigate();
   const [filterType, setFilterType] = useState('all');
   const [sortBy, setSortBy] = useState('date');
 
@@ -117,7 +117,7 @@ const Sessions = () => {
           </div>
           
           <button 
-            onClick={() => setShowAddModal(true)}
+            onClick={() => navigate('/sessions/add')}
             className="ios-button-racing flex items-center space-x-2"
           >
             <Plus className="w-4 h-4" />
@@ -200,7 +200,7 @@ const Sessions = () => {
               }
             </p>
             <button 
-              onClick={() => setShowAddModal(true)}
+              onClick={() => navigate('/sessions/add')}
               className="ios-button-glass"
             >
               Log Your First Session
@@ -209,16 +209,6 @@ const Sessions = () => {
         )}
       </div>
 
-      {/* Add Session Modal */}
-      {showAddModal && (
-        <AddSessionModal 
-          onClose={() => setShowAddModal(false)}
-          onSave={(sessionData) => {
-            console.log('Session saved:', sessionData);
-            setShowAddModal(false);
-          }}
-        />
-      )}
     </AppLayout>
   );
 };
