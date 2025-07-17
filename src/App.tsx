@@ -12,6 +12,7 @@ import AddSession from "./pages/AddSession";
 import Tracks from "./pages/Tracks";
 import AvailableTracks from "./pages/AvailableTracks";
 import Karts from "./pages/Karts";
+import Setups from "./pages/Setups";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 import Socials from "./pages/Socials";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/tracks" element={<Tracks />} />
           <Route path="/available-tracks" element={<AvailableTracks />} />
           <Route path="/karts" element={<Karts />} />
+          <Route path="/setups" element={<Setups />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/social" element={<Socials />} />

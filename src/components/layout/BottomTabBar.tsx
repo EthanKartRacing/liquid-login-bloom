@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Clock, MapPin, Car, Users, Settings, Newspaper } from 'lucide-react';
+import { Home, Clock, MapPin, Car, Users, Settings, Newspaper, Wrench } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const BottomTabBar = () => {
@@ -11,6 +11,7 @@ const BottomTabBar = () => {
     { icon: Clock, label: 'Sessions', path: '/sessions' },
     { icon: MapPin, label: 'Tracks', path: '/tracks' },
     { icon: Car, label: 'Karts', path: '/karts' },
+    { icon: Wrench, label: 'Setups', path: '/setups' },
     { icon: Newspaper, label: 'News', path: '/news' },
     { icon: Users, label: 'Social', path: '/social' },
     { icon: Settings, label: 'Settings', path: '/settings' },
